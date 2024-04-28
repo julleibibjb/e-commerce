@@ -13,6 +13,11 @@ const Login = () => {
   const dispatch = useDispatch();
   const loginState = useSelector((state) => state.auth.isLoggedIn);
 
+  const regObj = {
+    email,
+    password,
+  };
+
   useEffect(() => {
     if (loginState) {
       localStorage.clear();
@@ -33,28 +38,22 @@ const Login = () => {
     return isProceed;
   };
 
-  const proceedLogin = (e) => {
+  const proceedLogin = async (e) => {
     e.preventDefault();
-    if (isValidate()) {
-      fetch("http://localhost:8080/user")
-        .then((res) => res.json())
-        .then((res) => {
-          let data = res;
-          const foundUser = data.filter(
-            (item) => item.email === email && item.password === password
-          );
-          if (foundUser[0]) {
-            toast.success("Login successful");
-            localStorage.setItem("id", foundUser[0].id);
-            store.dispatch(loginUser());
-            navigate("/");
-          } else {
-            toast.warn("Email or password is incorrect");
-          }
-        })
-        .catch((err) => {
-          toast.error("Login failed due to: " + err.message);
-        });
+
+    const response = await fetch("http://127.0.0.1:8000/api/login/", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(regObj),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      toast.success("Login successful");
+      localStorage.setItem("id", data.id);
+      store.dispatch(loginUser());
+      navigate("/");
+    } else {
+      toast.warn("Email or password is incorrect");
     }
   };
 

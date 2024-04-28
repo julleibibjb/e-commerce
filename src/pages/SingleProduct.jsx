@@ -25,8 +25,8 @@ import { store } from "../store";
 export const singleProductLoader = async ({ params }) => {
   const { id } = params;
 
-  const response = await axios(`http://localhost:8080/products/${id}`);
-
+  // const response = await axios(`http://localhost:8080/products/${id}`);
+  const response = await axios(`http://localhost:3000/products/${id}`);
   return { productData: response.data };
 };
 
@@ -48,15 +48,19 @@ const SingleProduct = () => {
 
   const { productData } = useLoaderData();
 
+  // const availableSizes = [38, 39, 40, 41, 42, 43, 44];
+
   const product = {
     id: productData?.id + size,
     title: productData?.name,
     image: productData?.imageUrl,
     rating: productData?.rating,
     price: productData?.price?.current?.value,
+    // price: productData?.price,
     brandName: productData?.brandName,
     amount: quantity,
     selectedSize: size || productData?.availableSizes[0],
+
     isInWishList:
       wishItems.find((item) => item.id === productData?.id + size) !==
       undefined,
@@ -69,11 +73,11 @@ const SingleProduct = () => {
   const addToWishlistHandler = async (product) => {
     try {
       const getResponse = await axios.get(
-        `http://localhost:8080/user/${localStorage.getItem("id")}`
+        // `http://localhost:8080/user/${localStorage.getItem("id")}`
+        `http://localhost:3000/user/${localStorage.getItem("id")}`
       );
       const userObj = getResponse.data;
 
-      
       userObj.userWishlist = userObj.userWishlist || [];
 
       userObj.userWishlist.push(product);
@@ -83,7 +87,6 @@ const SingleProduct = () => {
         userObj
       );
 
-      
       store.dispatch(updateWishlist({ userObj }));
       toast.success("Product added to the wishlist!");
     } catch (error) {
@@ -110,11 +113,9 @@ const SingleProduct = () => {
       userObj
     );
 
-    
     store.dispatch(removeFromWishlist({ userObj }));
     toast.success("Product removed from the wishlist!");
   };
-
   return (
     <>
       <SectionTitle title="Product page" path="Home | Shop | Product page" />
@@ -126,7 +127,7 @@ const SingleProduct = () => {
             alt={productData.name}
           />
           <div className="other-product-images mt-1 grid grid-cols-3 w-96 gap-y-1 gap-x-2 max-sm:grid-cols-2 max-sm:w-64">
-            {productData?.additionalImageUrls.map((imageObj, index) => (
+            {productData.additionalImageUrls?.map((imageObj, index) => (
               <img
                 src={`https://${imageObj}`}
                 key={nanoid()}
@@ -239,8 +240,7 @@ const SingleProduct = () => {
               Category: {productData?.category}
             </div>
             <div className="badge bg-gray-700 badge-lg font-bold text-white p-5 mt-2">
-              Production Date:{" "}
-              {productData?.productionDate?.substring(0, 10)}
+              Production Date: {productData?.productionDate?.substring(0, 10)}
             </div>
           </div>
         </div>

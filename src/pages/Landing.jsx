@@ -3,12 +3,16 @@ import "../styles/Landing.css";
 import { Hero, ProductElement, Stats } from "../components";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import axios from "axios";
+import data from "../data/db.json";
 
 export const landingLoader = async () => {
   const response = await axios(
-    `http://localhost:8080/products?_page=1&_limit=8`
+    // `http://localhost:8080/products?_page=1&_limit=8`
+    // "https://api.jsonsilo.com/public/980028af-8d24-49b0-b6ff-33f7baf958ad"
+    // "http://localhost:3000/products"
+    "https://api.jsonsilo.com/public/980028af-8d24-49b0-b6ff-33f7baf958ad"
   );
-  const data = response.data;
+  const data = response.data.products;
 
   return { products: data };
 };

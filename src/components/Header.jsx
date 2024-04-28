@@ -14,7 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeMode } from "../features/auth/authSlice";
 import { store } from "../store";
 import axios from "axios";
-import { clearWishlist, updateWishlist } from "../features/wishlist/wishlistSlice";
+import {
+  clearWishlist,
+  updateWishlist,
+} from "../features/wishlist/wishlistSlice";
 
 const Header = () => {
   const { amount } = useSelector((state) => state.cart);
@@ -26,36 +29,32 @@ const Header = () => {
 
   const loginState = useSelector((state) => state.auth.isLoggedIn);
 
-
   const fetchWishlist = async () => {
-    if(loginState){
+    if (loginState) {
       try {
-        const getResponse = await axios.get(`http://localhost:8080/user/${localStorage.getItem("id")}`);
+        const getResponse = await axios.get(
+          `http://localhost:8080/user/${localStorage.getItem("id")}`
+        );
         const userObj = getResponse.data;
-  
-        store.dispatch(updateWishlist({userObj}));
-        
-       
+
+        store.dispatch(updateWishlist({ userObj }));
       } catch (error) {
         console.error(error);
       }
-    }else{
+    } else {
       store.dispatch(clearWishlist());
     }
-
   };
-
 
   useEffect(() => {
     setIsLoggedIn(loginState);
 
-      fetchWishlist();
-    
+    fetchWishlist();
   }, [loginState]);
 
   return (
     <>
-      <div className="topbar border-b border-gray-800">
+      {/* <div className="topbar border-b border-gray-800">
         <ul>
           <li>
             <FaHeadphones className="text-2xl max-sm:text-lg text-accent-content" />
@@ -70,7 +69,7 @@ const Header = () => {
             </span>
           </li>
         </ul>
-      </div>
+      </div> */}
       <div className="navbar bg-base-100 max-w-7xl mx-auto">
         <div className="flex-1">
           <Link
@@ -78,7 +77,7 @@ const Header = () => {
             className="btn btn-ghost normal-case text-2xl font-black text-accent-content"
           >
             <AiFillShopping />
-            Kuzma Clothing & Shoes
+            MarketPlace
           </Link>
         </div>
         <div className="flex-none">
@@ -193,7 +192,6 @@ const Header = () => {
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">
-  
             {/* Page content here */}
             <label htmlFor="my-drawer" className="btn drawer-button">
               <HiMiniBars3BottomLeft className="text-4xl" />
@@ -205,11 +203,11 @@ const Header = () => {
               aria-label="close sidebar"
               className="drawer-overlay"
             ></label>
-                    
+
             <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content mt-4">
-            <label htmlFor="my-drawer" className="btn drawer-button">
-            <FaWindowClose className="text-3xl ml-auto" />
-            </label>
+              <label htmlFor="my-drawer" className="btn drawer-button">
+                <FaWindowClose className="text-3xl ml-auto" />
+              </label>
               {/* Sidebar content here */}
               <li className="text-xl">
                 <NavLink className="text-accent-content" to="/">
